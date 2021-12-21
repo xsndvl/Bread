@@ -25,3 +25,8 @@ app.use("/breads", breadsController)
 app.listen(PORT, () =>{
     console.log('listening at port', PORT)
 })
+
+// 404 Page
+app.get("*", (req, res) =>{
+    res.status(404).send('404')
+})
