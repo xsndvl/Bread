@@ -6,10 +6,13 @@ const breads = express.Router()
 const Bread = require("../models/bread")
 
 breads.get("/", (req, res) =>{
-    // res.send(Bread)
-    res.render("Index", {
-        breads: Bread
-    })
+    Bread.find()
+        .then(foundBreads => {
+            res.render("index", {
+                breads: foundBreads,
+                title: "Index Page"
+            })
+        })
 })
 
 breads.get("/new", (req, res)=>{
@@ -17,54 +20,65 @@ breads.get("/new", (req, res)=>{
 })
 
 //Edit
-breads.get('/:arrayIndex/edit', (req, res) =>{
-    res.render('edit',{
-        bread: Bread[req.params.arrayIndex],
-        index: req.params.arrayIndex
+breads.get('/:id/edit', (req, res) =>{
+    Bread.findByIdAndUpdate(req.params.id)
+    .then(foundBread => {
+        res.render('edit',{
+            bread: foundBread
+        })
     })
+
 })
 
 // UPDATE
-breads.put('/:arrayIndex', (req, res) => {
+breads.put('/:id', (req, res) => {
     if(req.body.hasGluten === 'on'){
       req.body.hasGluten = true
     } else {
       req.body.hasGluten = false
     }
-    Bread[req.params.arrayIndex] = req.body
-    res.redirect(`/breads/${req.params.arrayIndex}`)
+    Bread.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        .then(updatedBread => {
+            console.log(updatedBread)
+            res.redirect(`/breads/${req.params.id}`)
+        })
+    
   })
 
+  //SHOW
 breads.get("/:arrayIndex", (req, res) =>{
-    if(Bread[req.params.arrayIndex]){
-        res.render("Show", {
-            bread: Bread[req.params.arrayIndex],
-            index: req.params.arrayIndex
+    Bread.findById(req.params.arrayIndex)
+        .then(foundBread => {
+            res.render("show", {
+                bread: foundBread
+            })
         })
-    } else{
-        res.send("404")
-    }
+        // .catch(err => {
+        //     res.send(404)
+        // })
 })
 
 breads.post("/",(req, res) =>{
     if(!req.body.image){
-        req.body.image = 
-        "https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80"
+        req.body.image = undefined
     }
     if(req.body.hasGluten === "on"){
         req.body.hasGluten = true
     } else{
         req.body.hasGluten = false
     }
-    Bread.push(req.body)
+    Bread.create(req.body)
     res.redirect("/breads")
 })
 
 
 
 //Delete
-breads.delete('/:arrayIndex',(req, res)=>{
-    Bread.splice(req.params.arrayIndex, 1)
-    res.status(303).redirect('/breads')
+breads.delete('/:id',(req, res)=>{
+    Bread.findByIdAndDelete(req.params.id)
+        .then(deletedBread => {
+            console.log(deletedBread)
+            res.status(303).redirect("/breads")
+        })
 })
 module.exports = breads
