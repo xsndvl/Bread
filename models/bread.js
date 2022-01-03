@@ -7,10 +7,10 @@ const {Schema} = mongoose
 const breadSchema = new Schema({
   name: {type: String, required: true},
   hasGluten: Boolean,
-  image: {type: String, default: "http://placehold.it/500x500.png"},
+  image: {type: String, default: "https://3emsiq36oenj2cmlhdjc290x-wpengine.netdna-ssl.com/wp-content/uploads/2019/06/bread-making-workshop-jason-bond.jpg"},
   baker: {
-    type: String,
-    enum: ["Rachel", "Monica", "Joey", "Chandler", "Ross"]
+    type: Schema.Types.ObjectId,
+    ref: "Baker"
   }
 })
 

@@ -5,6 +5,7 @@ const bread = require('../models/bread')
 const breads = express.Router()
 const Bread = require("../models/bread")
 const breadSeedData = require("../models/seed.js")
+const Baker = require("../models/baker")
 
 breads.get("/", (req, res) =>{
     Bread.find()
@@ -16,8 +17,16 @@ breads.get("/", (req, res) =>{
         })
 })
 
-breads.get("/new", (req, res)=>{
-    res.render("New")
+breads.get("/new", async (req, res)=>{
+    try{
+        const foundBakers = await Baker.find();
+        res.render("new", {
+            bakers: foundBakers
+        })
+    } catch(err) {
+        res.send("ERROR")
+    }
+    
 })
 
 //Edit
@@ -44,7 +53,7 @@ breads.put('/:id', (req, res) => {
             res.redirect(`/breads/${req.params.id}`)
         })
         .catch(err => {
-            res.send(404)
+            res.status(404)
         })
     
   })
@@ -60,7 +69,7 @@ breads.get("/:arrayIndex", (req, res) =>{
             })
         })
         .catch(err => {
-            res.send(404)
+            res.status(404)
         })
 })
 

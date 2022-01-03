@@ -23,6 +23,10 @@ mongoose.connect(
     process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true}, () => console.log("Connected to database")
 )
 
+//Bakers
+const bakersController = require("./controllers/bakers_controller")
+app.use("/bakers", bakersController)
+
 //ROUTES
 app.get('/', (req, res) =>{
     res.send('Welcome to an Awesome App about Breads!')
