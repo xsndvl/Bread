@@ -53,13 +53,15 @@ breads.put('/:id', (req, res) => {
 breads.get("/:arrayIndex", (req, res) =>{
     Bread.findById(req.params.arrayIndex)
         .then(foundBread => {
+            const bakedBy = foundBread.getBakedBy()
+            console.log(bakedBy)
             res.render("show", {
                 bread: foundBread
             })
         })
-        // .catch(err => {
-        //     res.send(404)
-        // })
+        .catch(err => {
+            res.send(404)
+        })
 })
 
 breads.post("/",(req, res) =>{
