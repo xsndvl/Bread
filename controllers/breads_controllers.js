@@ -4,6 +4,7 @@ const res = require('express/lib/response')
 const bread = require('../models/bread')
 const breads = express.Router()
 const Bread = require("../models/bread")
+const breadSeedData = require("../models/seed.js")
 
 breads.get("/", (req, res) =>{
     Bread.find()
@@ -37,10 +38,13 @@ breads.put('/:id', (req, res) => {
     } else {
       req.body.hasGluten = false
     }
-    Bread.findByIdAndUpdate(req.params.id, req.body, {new: true})
+    Bread.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators: true})
         .then(updatedBread => {
             console.log(updatedBread)
             res.redirect(`/breads/${req.params.id}`)
+        })
+        .catch(err => {
+            res.send(404)
         })
     
   })
@@ -71,8 +75,6 @@ breads.post("/",(req, res) =>{
     res.redirect("/breads")
 })
 
-
-
 //Delete
 breads.delete('/:id',(req, res)=>{
     Bread.findByIdAndDelete(req.params.id)
@@ -81,4 +83,13 @@ breads.delete('/:id',(req, res)=>{
             res.status(303).redirect("/breads")
         })
 })
+
+//SEED
+breads.get("/data/seed", (req, res) => {
+    Bread.insertMany(breadSeedData)
+    .then(createdBreads => {
+        res.redirect("/breads")
+    })
+})
+
 module.exports = breads
