@@ -7,16 +7,7 @@ const Bread = require("../models/bread")
 const breadSeedData = require("../models/seed.js")
 const Baker = require("../models/baker")
 
-// breads.get("/", (req, res) =>{
-//     Bread.find()
-//         .then(foundBreads => {
-//             res.render("index", {
-//                 breads: foundBreads,
-//                 title: "Index Page"
-//             })
-//         })
-// })
-
+//Index
 breads.get('/', async (_req, res, next) => {
     try {
       const foundBakers = await Baker.find();
@@ -31,26 +22,25 @@ breads.get('/', async (_req, res, next) => {
     }
   });
 
-//Edit
-// breads.get('/:id/edit', (req, res) =>{
-//     Baker.find()
-//     .then(foundBakers => {
-//         Bread.findByIdAndUpdate(req.params.id)
-//         .then(foundBread => {
-//             res.render('edit',{
-//                 bread: foundBread
-//                 bakers: foundBakers
-//             })
-//         })
-//     })
-// })
+// Edit
+breads.get('/:id/edit', async (req, res, next) =>{
+    try{
+        const foundBakers = await Baker.find()
+        const foundBreads = await Bread.find()
+        res.render("edit", {
+            bread: foundBreads,
+            bakers: foundBakers
+        })
+    } catch (err) {
+        next(err)
+    }
+})
 
-breads.get('/:id/edit', async (req, res, next) => {
+//New
+breads.get('/new', async (_req, res, next) => {
     try {
       const foundBakers = await Baker.find();
-      const foundBread = await Bread.findById(req.params.id);
-      res.render('edit', {
-        bread: foundBread,
+      res.render('new', {
         bakers: foundBakers,
       });
     } catch (err) {
@@ -73,22 +63,19 @@ breads.put('/:id', (req, res) => {
         .catch(err => {
             res.status(404)
         })
-    
   })
 
-  //SHOW
-  breads.get("/:arrayIndex", (req, res) =>{
-    Bread.findById(req.params.arrayIndex)
-        .then(foundBread => {
-            res.render("show", {
-                bread: foundBread
-            })
-            const bakedBy = foundBread.getBakedBy()
-            console.log(bakedBy)
+//SHOW
+breads.get("/:arrayIndex", async (req, res, next) =>{
+    try{
+        const foundBread = await Bread.find()
+        res.render("show", {
+            bread: foundBread
         })
-        .catch(err => {
-            res.status(404)
-        })
+        const bakedBy = foundBread.getBakedBy()
+    } catch (err) {
+        next(err)
+    }
 })
 
 breads.post("/",(req, res) =>{
