@@ -16,8 +16,13 @@ function Show ({baker}) {
                     })
                 }
             </ul>
-                <p>{baker.name} has been baking with us since {baker.startDate.getFullYear()}</p>
-                <p>About {baker.name}: {baker.bio}</p>
+            <p>{baker.name} has been baking with us since {baker.startDate.getFullYear()}</p>
+            <p>About {baker.name}: {baker.bio}</p>
+
+            <form action={`/bakers/${baker.id}?_method=DELETE`} method="POST">
+                <input type="submit" value="DELETE" />
+            </form>
+            
         </Default>
     )
 }

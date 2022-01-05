@@ -2,6 +2,7 @@
 const express = require('express')
 const breadsController = require("./controllers/breads_controllers")
 const mongoose = require("mongoose")
+var bodyParser = require('body-parser');
 
 //CONFIGURATION
 require('dotenv').config()
@@ -17,6 +18,8 @@ app.set('views', __dirname + '/views')
 app.set("view engine", "jsx")
 app.engine('jsx', require('express-react-views').createEngine())
 app.use(methodOverride('_method'))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 //DB CONNECTION
 mongoose.connect(
